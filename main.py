@@ -1,13 +1,15 @@
 import numpy as np
 
 def find_eig(A):
-    eigenvalues, eigenvectors = np.real(np.linalg.eig(A))
-    for i in eigenvalues:
-        for j in eigenvectors:
-            if A*j == i*j:
-                continue
-            else:
-                return "Something went wrong"
+    eigenvalues, eigenvectors = np.linalg.eig(A)
+    eigenvalues = np.real(eigenvalues)
+    eigenvectors = np.real(eigenvectors)
+    for i in range(len(eigenvalues)):
+        lambd = eigenvalues[i]
+        v = eigenvectors[:, i]
+
+        if not np.allclose(A @ v, lambd * v):
+            raise ValueError(f"Wrong eigenvalue {lambd}")
 
     return eigenvalues, eigenvectors
 
