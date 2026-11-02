@@ -16,14 +16,18 @@ def find_eig(A):
     return eigenvalues, eigenvectors
 
 image_raw = imread("images.jpeg")
-# print(image_raw.shape)
+print(image_raw.shape)
+plt.imshow(image_raw)
+plt.show()
 
 image_sum = image_raw.sum(axis=2)
-# print(image_sum.shape)
+print(image_sum.shape)
 image_bw = image_sum/image_sum.max()
-# print(image_bw.max())
+print(image_bw.max())
+plt.imshow(image_bw, cmap = 'gray')
+plt.show()
 
-mean = np.mean(image_bw)
+mean = image_bw.mean(axis=0)
 
 normalized_image = image_bw - mean
 cov_matrix  = np.cov(normalized_image, rowvar=False)
@@ -43,19 +47,19 @@ plt.axhline(95, color = 'k', linestyle = '--')
 plt.axvline(t, color = 'k', linestyle = '--')
 plt.xlabel('principal components')
 plt.ylabel('cumulative explained variance (%)')
-# plt.show()
+plt.show()
 
 def reconstruct_image(k):
-    return np.clip((normalized_image @ eigenvectors[:, :k]) @ (eigenvectors[:, :k]).T + mean, 0 , 1)
+    return np.clip((normalized_image @ sorted_eigenvectors[:, :k]) @ (sorted_eigenvectors[:, :k]).T + mean, 0 , 1)
 
 plt.imshow(reconstruct_image(t), cmap = 'gray')
-# plt.show()
+plt.show()
 
 fig, axes = plt.subplots(2,3, figsize = (15,8))
 for ax, k in zip(axes.ravel(), [5, 15, 25, 75, 100, 170 ]):
     ax.imshow(reconstruct_image(k), cmap = 'gray')
     ax.set_title(f"Components amount : {k}")
-# plt.show()
+plt.show()
 
 
 def encrypt_message(message, key_matrix):
@@ -79,6 +83,7 @@ def decrypt_message(encrypted_vector, key_matrix):
 message = 'Hello, World!'
 key_matrix = np.random.randint(0, 256, (len(message), len(message)))
 encrypted = encrypt_message(message,key_matrix)
-print(encrypt_message(message,key_matrix))
+print(f"message : {message}")
+print(f"encrypted : {encrypted}")
 decrypted = decrypt_message(encrypted, key_matrix)
-print(decrypted)
+print(f"decrypted : {decrypted}")
