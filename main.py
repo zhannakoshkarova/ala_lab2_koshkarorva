@@ -56,3 +56,14 @@ for ax, k in zip(axes.ravel(), [5, 15, 25, 75, 100, 170 ]):
     ax.imshow(reconstruct_image(k), cmap = 'gray')
     ax.set_title(f"Components amount : {k}")
 plt.show()
+
+
+def encrypt_message(message, key_matrix):
+
+    massege_vector = np.array([ord(char) for char in message])
+    eigenvalues, eigenvectors = np.linalg.eig(key_matrix)
+    diagonalized_key_matrix = np.dot(np.dot(eigenvectors, np.diag(eigenvalues)), np.linalg.inv(eigenvectors))
+    encrypted_vector = np.dot(diagonalized_key_matrix, massege_vector)
+    return encrypted_vector
+
+
