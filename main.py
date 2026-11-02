@@ -43,5 +43,16 @@ plt.axhline(95, color = 'k', linestyle = '--')
 plt.axvline(t, color = 'k', linestyle = '--')
 plt.xlabel('principal components')
 plt.ylabel('cumulative explained variance (%)')
-plt.show()
+# plt.show()
 
+def reconstruct_image(k):
+    return np.clip((normalized_image @ eigenvectors[:, :k]) @ (eigenvectors[:, :k]).T + mean, 0 , 1)
+
+plt.imshow(reconstruct_image(t), cmap = 'gray')
+# plt.show()
+
+fig, axes = plt.subplots(2,3, figsize = (15,8))
+for ax, k in zip(axes.ravel(), [5, 15, 25, 75, 100, 170 ]):
+    ax.imshow(reconstruct_image(k), cmap = 'gray')
+    ax.set_title(f"Components amount : {k}")
+plt.show()
