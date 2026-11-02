@@ -55,7 +55,7 @@ fig, axes = plt.subplots(2,3, figsize = (15,8))
 for ax, k in zip(axes.ravel(), [5, 15, 25, 75, 100, 170 ]):
     ax.imshow(reconstruct_image(k), cmap = 'gray')
     ax.set_title(f"Components amount : {k}")
-plt.show()
+# plt.show()
 
 
 def encrypt_message(message, key_matrix):
@@ -66,4 +66,19 @@ def encrypt_message(message, key_matrix):
     encrypted_vector = np.dot(diagonalized_key_matrix, massege_vector)
     return encrypted_vector
 
+def decrypt_message(encrypted_vector, key_matrix):
+    eigenvalues, eigenvectors = np.linalg.eig(key_matrix)
+    inv_diag = np.diag(1 / eigenvalues)
+    inv_key = eigenvectors @ inv_diag @ np.linalg.inv(eigenvectors)
+    message_vector = inv_key @ encrypted_vector
+    message_int = np.round(message_vector.real).astype(int)
+    message = "".join(chr(i) for i in message_int)
 
+    return message
+
+message = 'Hello, World!'
+key_matrix = np.random.randint(0, 256, (len(message), len(message)))
+encrypted = encrypt_message(message,key_matrix)
+print(encrypt_message(message,key_matrix))
+decrypted = decrypt_message(encrypted, key_matrix)
+print(decrypted)
